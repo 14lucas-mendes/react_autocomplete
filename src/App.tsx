@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { peopleFromServer } from './data/people';
+import { Person } from './types/Person';
 
 export const App: React.FC = () => {
-  const { name, born, died } = peopleFromServer[0];
+  const [personDetail, setPersonDetail] = useState<Person | undefined>();
 
   return (
     <div className="container">
       <main className="section is-flex is-flex-direction-column">
         <h1 className="title" data-cy="title">
-          {`${name} (${born} - ${died})`}
+          {personDetail === undefined
+            ? 'No selected person'
+            : `${personDetail?.name} (${personDetail?.born} - ${personDetail?.died})`}
         </h1>
 
         <div className="dropdown is-active">
@@ -24,33 +27,22 @@ export const App: React.FC = () => {
 
           <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
             <div className="dropdown-content">
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-link">Pieter Haverbeke</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-link">Pieter Bernard Haverbeke</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-link">Pieter Antone Haverbeke</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-danger">Elisabeth Haverbeke</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-link">Pieter de Decker</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-danger">Petronella de Decker</p>
-              </div>
-
-              <div className="dropdown-item" data-cy="suggestion-item">
-                <p className="has-text-danger">Elisabeth Hercke</p>
-              </div>
+              {peopleFromServer.map((person, index) => (
+                <div
+                  className="dropdown-item"
+                  data-cy="suggestion-item"
+                  key={index}
+                  onClick={() => setPersonDetail(person)}
+                >
+                  <p
+                    className={
+                      person.sex === 'm' ? 'has-text-link' : 'has-text-danger'
+                    }
+                  >
+                    {person.name}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
