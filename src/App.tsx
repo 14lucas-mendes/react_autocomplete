@@ -5,6 +5,13 @@ import { Person } from './types/Person';
 
 export const App: React.FC = () => {
   const [personDetail, setPersonDetail] = useState<Person | undefined>();
+  const [query, setQuery] = useState('');
+
+  const [sectionList, setSectionList] = useState(false);
+
+  const searchQuery = peopleFromServer.filter(person =>
+    person.name.toLocaleLowerCase().includes(query),
+  );
 
   return (
     <div className="container">
@@ -22,28 +29,40 @@ export const App: React.FC = () => {
               placeholder="Enter a part of the name"
               className="input"
               data-cy="search-input"
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value);
+              }}
+              onFocus={() => {
+                setSectionList(true);
+              }}
+              onBlur={() => {
+                setSectionList(false);
+              }}
             />
           </div>
 
           <div className="dropdown-menu" role="menu" data-cy="suggestions-list">
-            <div className="dropdown-content">
-              {peopleFromServer.map((person, index) => (
-                <div
-                  className="dropdown-item"
-                  data-cy="suggestion-item"
-                  key={index}
-                  onClick={() => setPersonDetail(person)}
-                >
-                  <p
-                    className={
-                      person.sex === 'm' ? 'has-text-link' : 'has-text-danger'
-                    }
+            {sectionList && (
+              <div className="dropdown-content">
+                {searchQuery.map((person, index) => (
+                  <div
+                    className="dropdown-item"
+                    data-cy="suggestion-item"
+                    key={index}
+                    onClick={() => setPersonDetail(person)}
                   >
-                    {person.name}
-                  </p>
-                </div>
-              ))}
-            </div>
+                    <p
+                      className={
+                        person.sex === 'm' ? 'has-text-link' : 'has-text-danger'
+                      }
+                    >
+                      {person.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
