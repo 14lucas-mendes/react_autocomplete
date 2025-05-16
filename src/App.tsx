@@ -12,6 +12,19 @@ export const App: React.FC = () => {
     person.name.toLowerCase().includes(query.toLowerCase().trim()),
   );
 
+  const handleInputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+
+    setQuery(newValue);
+
+    if (
+      newValue === '' ||
+      (personDetail && !newValue.includes(personDetail.name))
+    ) {
+      setPersonDetail(undefined);
+    }
+  };
+
   return (
     <div className="container">
       <main className="section is-flex is-flex-direction-column">
@@ -29,9 +42,7 @@ export const App: React.FC = () => {
               className="input"
               data-cy="search-input"
               value={query}
-              onChange={event => {
-                setQuery(event.target.value);
-              }}
+              onChange={handleInputOnChange}
               onFocus={() => {
                 setSectionList(true);
               }}
