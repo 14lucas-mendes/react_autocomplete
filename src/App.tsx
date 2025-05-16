@@ -6,11 +6,10 @@ import { Person } from './types/Person';
 export const App: React.FC = () => {
   const [personDetail, setPersonDetail] = useState<Person | undefined>();
   const [query, setQuery] = useState('');
-
   const [sectionList, setSectionList] = useState(false);
 
   const searchQuery = peopleFromServer.filter(person =>
-    person.name.toLocaleLowerCase().includes(query),
+    person.name.toLowerCase().includes(query.toLowerCase().trim()),
   );
 
   return (
@@ -19,7 +18,7 @@ export const App: React.FC = () => {
         <h1 className="title" data-cy="title">
           {personDetail === undefined
             ? 'No selected person'
-            : `${personDetail?.name} (${personDetail?.born} - ${personDetail?.died})`}
+            : `${personDetail.name} (${personDetail.born} - ${personDetail.died})`}
         </h1>
 
         <div className="dropdown is-active">
@@ -66,19 +65,21 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        <div
-          className="
+        {query.length > 0 && searchQuery.length === 0 && (
+          <div
+            className="
             notification
             is-danger
             is-light
             mt-3
             is-align-self-flex-start
           "
-          role="alert"
-          data-cy="no-suggestions-message"
-        >
-          <p className="has-text-danger">No matching suggestions</p>
-        </div>
+            role="alert"
+            data-cy="no-suggestions-message"
+          >
+            <p className="has-text-danger">No matching suggestions</p>
+          </div>
+        )}
       </main>
     </div>
   );
